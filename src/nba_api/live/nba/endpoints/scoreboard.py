@@ -1,9 +1,9 @@
 from nba_api.live.nba.endpoints._base import Endpoint
 from nba_api.live.nba.library.http import NBALiveHTTP
-
+from nba_api.library.parameters import LeagueID
 
 class ScoreBoard(Endpoint):
-    endpoint_url = "scoreboard/todaysScoreboard_00.json"
+    endpoint_url = "scoreboard/todaysScoreboard_{league_id}.json"
     expected_data = {
         "meta": {"version": 0, "request": "", "time": "", "code": 0},
         "scoreboard": {
@@ -83,8 +83,10 @@ class ScoreBoard(Endpoint):
     games = None
     headers = None
 
-    def __init__(self, proxy=None, headers=None, timeout=30, get_request=True):
+    def __init__(self, league_id=LeagueID.default, proxy=None, headers=None, timeout=30, get_request=True):
+        self.league_id = league_id
         self.proxy = proxy
+        self.parameters = {"LeagueID": league_id}
         if headers is not None:
             self.headers = headers
         self.timeout = timeout
@@ -93,8 +95,8 @@ class ScoreBoard(Endpoint):
 
     def get_request(self):
         self.nba_response = NBALiveHTTP().send_api_request(
-            endpoint=self.endpoint_url,
-            parameters={},
+            endpoint=self.endpoint_url.format(league_id=self.league_id),
+            parameters=self.parameters,
             proxy=self.proxy,
             headers=self.headers,
             timeout=self.timeout,

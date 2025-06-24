@@ -22,6 +22,7 @@ try:
 except ImportError:
     PROXY = ""
 
+from nba_api.library.parameters import LeagueID
 
 if DEBUG:
     from hashlib import md5
@@ -101,6 +102,10 @@ class NBAHTTP:
             request_headers = self.headers
         else:
             request_headers = headers
+
+        if parameters.get("LeagueID") == LeagueID.wnba:
+            base_url = base_url.replace("nba", "wnba")
+            request_headers["Host"] = "cdn.wnba.com"
 
         if referer:
             request_headers["Referer"] = referer

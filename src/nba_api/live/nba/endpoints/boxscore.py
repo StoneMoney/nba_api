@@ -323,7 +323,7 @@ class BoxScore(Endpoint):
     def get_request(self):
         self.nba_response = NBALiveHTTP().send_api_request(
             endpoint=self.endpoint_url.format(game_id=self.game_id),
-            parameters={},
+            parameters={"LeagueID": self.game_id[0:2]},
             proxy=self.proxy,
             headers=self.headers,
             timeout=self.timeout,
